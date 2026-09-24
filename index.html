@@ -1,1 +1,1512 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>GREEN×EXPO MY PLAN</title>
 
+<style>
+* {
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue",
+               "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif;
+  background: #f5f7f2;
+  color: #17352a;
+}
+
+button, input, select, textarea {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+.app {
+  max-width: 520px;
+  margin: 0 auto;
+  min-height: 100vh;
+  background: #f5f7f2;
+  padding-bottom: 90px;
+}
+
+/* HEADER */
+.header {
+  background: #174f39;
+  color: white;
+  padding: 22px 20px 20px;
+  border-radius: 0 0 24px 24px;
+}
+
+.header-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logo-small {
+  font-size: 12px;
+  letter-spacing: 1.8px;
+  opacity: .8;
+}
+
+.logo {
+  font-size: 23px;
+  font-weight: 800;
+  margin-top: 5px;
+}
+
+.header-date {
+  font-size: 13px;
+  opacity: .8;
+}
+
+/* CONTENT */
+.content {
+  padding: 20px 16px;
+}
+
+.screen {
+  display: none;
+}
+
+.screen.active {
+  display: block;
+}
+
+.page-title {
+  font-size: 25px;
+  font-weight: 800;
+  margin: 4px 0 18px;
+}
+
+.section-title {
+  font-size: 17px;
+  font-weight: 800;
+  margin: 24px 0 12px;
+}
+
+/* CARDS */
+.card {
+  background: white;
+  border-radius: 18px;
+  padding: 17px;
+  margin-bottom: 12px;
+  box-shadow: 0 2px 10px rgba(25,60,40,.06);
+}
+
+.card-title {
+  font-weight: 800;
+  margin-bottom: 8px;
+}
+
+.empty {
+  color: #849188;
+  font-size: 14px;
+  padding: 10px 0;
+}
+
+/* HOME */
+.hero {
+  background: linear-gradient(145deg, #174f39, #287553);
+  color: white;
+  border-radius: 22px;
+  padding: 22px;
+  margin-bottom: 16px;
+}
+
+.hero-label {
+  font-size: 13px;
+  opacity: .8;
+}
+
+.hero-date {
+  font-size: 28px;
+  font-weight: 800;
+  margin: 8px 0;
+}
+
+.hero-count {
+  font-size: 14px;
+  opacity: .9;
+}
+
+.summary-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.summary {
+  background: white;
+  border-radius: 17px;
+  padding: 16px;
+  box-shadow: 0 2px 10px rgba(25,60,40,.05);
+}
+
+.summary-icon {
+  font-size: 20px;
+}
+
+.summary-label {
+  color: #7a877f;
+  font-size: 12px;
+  margin-top: 7px;
+}
+
+.summary-value {
+  font-size: 18px;
+  font-weight: 800;
+  margin-top: 3px;
+}
+
+/* CALENDAR */
+.calendar-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 14px;
+}
+
+.month-title {
+  font-size: 21px;
+  font-weight: 800;
+}
+
+.month-buttons button {
+  width: 38px;
+  height: 38px;
+  border: none;
+  background: white;
+  border-radius: 12px;
+  margin-left: 5px;
+  font-size: 18px;
+}
+
+.weekdays,
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+}
+
+.weekdays {
+  margin-bottom: 6px;
+}
+
+.weekday {
+  text-align: center;
+  font-size: 11px;
+  color: #859188;
+  padding: 4px 0;
+}
+
+.day {
+  min-height: 91px;
+  background: white;
+  border: 1px solid #edf0eb;
+  padding: 6px 4px;
+  overflow: hidden;
+  position: relative;
+}
+
+.day.empty-day {
+  background: transparent;
+  border: none;
+}
+
+.day-number {
+  font-size: 13px;
+  font-weight: 800;
+  margin-bottom: 5px;
+}
+
+.day.today-plan {
+  box-shadow: inset 0 3px 0 #2d805c;
+}
+
+.bus-columns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 3px;
+  margin-top: 4px;
+}
+
+.bus-col {
+  min-width: 0;
+  text-align: center;
+  border-radius: 7px;
+  background: #f2f5f1;
+  padding: 3px 1px;
+}
+
+.bus-label {
+  font-size: 9px;
+  font-weight: 800;
+  color: #4f665a;
+}
+
+.bus-time {
+  font-size: 9px;
+  font-weight: 700;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.bus-station {
+  font-size: 8px;
+  color: #728078;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.bus-empty {
+  font-size: 14px;
+  line-height: 30px;
+}
+
+.event-badge {
+  margin-top: 4px;
+  font-size: 8px;
+  font-weight: 800;
+  color: #a06417;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+/* DETAIL */
+.detail-back {
+  border: none;
+  background: none;
+  color: #246a4c;
+  font-weight: 700;
+  padding: 0;
+  margin-bottom: 12px;
+}
+
+.detail-date {
+  font-size: 27px;
+  font-weight: 800;
+  margin-bottom: 18px;
+}
+
+.detail-section {
+  margin-bottom: 18px;
+}
+
+.detail-section-title {
+  font-weight: 800;
+  margin-bottom: 8px;
+}
+
+.bus-detail-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 9px;
+}
+
+.bus-detail {
+  background: white;
+  border-radius: 16px;
+  padding: 15px;
+  border: 1px solid #e8ece6;
+}
+
+.bus-detail strong {
+  display: block;
+  margin-bottom: 8px;
+}
+
+.bus-detail .time {
+  font-size: 21px;
+  font-weight: 800;
+}
+
+.bus-detail .station {
+  color: #6c786f;
+  font-size: 13px;
+  margin-top: 4px;
+}
+
+.detail-event {
+  background: #fffaf0;
+  border-radius: 15px;
+  padding: 14px;
+  margin-bottom: 8px;
+}
+
+.detail-event-title {
+  font-weight: 800;
+}
+
+.detail-event-info {
+  color: #7a6a51;
+  font-size: 13px;
+  margin-top: 4px;
+}
+
+/* BUTTON */
+.primary-button {
+  width: 100%;
+  border: none;
+  border-radius: 15px;
+  background: #1c6547;
+  color: white;
+  font-weight: 800;
+  padding: 14px;
+  margin-top: 8px;
+}
+
+.secondary-button {
+  width: 100%;
+  border: 1px solid #d9e0da;
+  border-radius: 15px;
+  background: white;
+  color: #24583f;
+  font-weight: 800;
+  padding: 13px;
+  margin-top: 8px;
+}
+
+/* TICKETS / BUS */
+.big-number {
+  font-size: 32px;
+  font-weight: 900;
+  color: #174f39;
+}
+
+.muted {
+  color: #7d8981;
+  font-size: 13px;
+}
+
+.ticket-progress {
+  display: flex;
+  gap: 6px;
+  margin: 14px 0;
+}
+
+.slot {
+  height: 9px;
+  flex: 1;
+  border-radius: 10px;
+  background: #dfe7e0;
+}
+
+.slot.used {
+  background: #2b7956;
+}
+
+.list-item {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 13px 0;
+  border-bottom: 1px solid #edf0eb;
+}
+
+.list-item:last-child {
+  border-bottom: none;
+}
+
+.list-main {
+  font-weight: 700;
+}
+
+.list-sub {
+  color: #7a877f;
+  font-size: 12px;
+  margin-top: 3px;
+}
+
+.list-price {
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+/* FORM */
+.form-group {
+  margin-bottom: 14px;
+}
+
+.form-label {
+  display: block;
+  font-size: 13px;
+  font-weight: 800;
+  margin-bottom: 6px;
+}
+
+input, select, textarea {
+  width: 100%;
+  border: 1px solid #d8e0d9;
+  background: white;
+  border-radius: 12px;
+  padding: 12px;
+  outline: none;
+}
+
+textarea {
+  min-height: 90px;
+  resize: vertical;
+}
+
+.radio-row {
+  display: flex;
+  gap: 8px;
+}
+
+.radio-button {
+  flex: 1;
+  border: 1px solid #d8e0d9;
+  background: white;
+  border-radius: 12px;
+  padding: 12px;
+  text-align: center;
+  font-weight: 700;
+}
+
+.radio-button.selected {
+  background: #e5f1e9;
+  border-color: #4e8b6c;
+  color: #174f39;
+}
+
+/* MODAL */
+.modal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(10,30,20,.45);
+  z-index: 50;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.modal.show {
+  display: flex;
+}
+
+.modal-box {
+  width: 100%;
+  max-width: 520px;
+  max-height: 88vh;
+  overflow-y: auto;
+  background: #f5f7f2;
+  border-radius: 25px 25px 0 0;
+  padding: 20px 17px 30px;
+}
+
+.modal-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 18px;
+}
+
+.modal-title {
+  font-size: 20px;
+  font-weight: 800;
+}
+
+.close {
+  border: none;
+  background: white;
+  border-radius: 50%;
+  width: 38px;
+  height: 38px;
+}
+
+/* NAV */
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 520px;
+  background: rgba(255,255,255,.95);
+  backdrop-filter: blur(15px);
+  border-top: 1px solid #e1e7e1;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  padding: 8px 4px calc(8px + env(safe-area-inset-bottom));
+  z-index: 30;
+}
+
+.nav-button {
+  border: none;
+  background: transparent;
+  color: #829087;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 5px 1px;
+}
+
+.nav-icon {
+  font-size: 20px;
+  display: block;
+  margin-bottom: 2px;
+}
+
+.nav-button.active {
+  color: #176044;
+}
+
+/* SMALL */
+@media (max-width: 380px) {
+  .day {
+    min-height: 83px;
+  }
+
+  .bus-time {
+    font-size: 8px;
+  }
+
+  .bus-station {
+    font-size: 7px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+<header class="header">
+  <div class="header-top">
+    <div>
+      <div class="logo-small">GREEN×EXPO 2027</div>
+      <div class="logo">MY PLAN</div>
+    </div>
+    <div class="header-date" id="headerDate"></div>
+  </div>
+</header>
+
+<main class="content">
+
+<!-- HOME -->
+<section id="home" class="screen active">
+  <div class="hero">
+    <div class="hero-label">次回の来場</div>
+    <div class="hero-date" id="nextVisit">まだ登録されていません</div>
+    <div class="hero-count" id="countdown"></div>
+  </div>
+
+  <div class="summary-grid">
+    <div class="summary">
+      <div class="summary-icon">🎫</div>
+      <div class="summary-label">来場予約</div>
+      <div class="summary-value" id="homeTickets">0 / 4</div>
+    </div>
+
+    <div class="summary">
+      <div class="summary-icon">🚌</div>
+      <div class="summary-label">バス累計</div>
+      <div class="summary-value" id="homeBusTotal">¥0</div>
+    </div>
+  </div>
+
+  <div class="section-title">次の予定</div>
+  <div id="homePlans"></div>
+</section>
+
+
+<!-- CALENDAR -->
+<section id="calendar" class="screen">
+  <div class="page-title">カレンダー</div>
+
+  <div class="calendar-head">
+    <div class="month-title" id="monthTitle"></div>
+    <div class="month-buttons">
+      <button onclick="changeMonth(-1)">‹</button>
+      <button onclick="changeMonth(1)">›</button>
+    </div>
+  </div>
+
+  <div class="weekdays">
+    <div class="weekday">月</div>
+    <div class="weekday">火</div>
+    <div class="weekday">水</div>
+    <div class="weekday">木</div>
+    <div class="weekday">金</div>
+    <div class="weekday">土</div>
+    <div class="weekday">日</div>
+  </div>
+
+  <div class="calendar-grid" id="calendarGrid"></div>
+</section>
+
+
+<!-- DAY DETAIL -->
+<section id="detail" class="screen">
+  <button class="detail-back" onclick="showScreen('calendar')">‹ カレンダーへ戻る</button>
+  <div class="detail-date" id="detailDate"></div>
+
+  <div class="detail-section">
+    <div class="detail-section-title">🎫 チケット</div>
+    <div class="card" id="detailTicket"></div>
+  </div>
+
+  <div class="detail-section">
+    <div class="detail-section-title">🚌 シャトルバス</div>
+    <div class="bus-detail-grid" id="detailBus"></div>
+  </div>
+
+  <div class="detail-section">
+    <div class="detail-section-title">‼️ イベント</div>
+    <div id="detailEvents"></div>
+  </div>
+
+  <button class="primary-button" onclick="openAddMenu()">＋ この日に予定を追加</button>
+</section>
+
+
+<!-- TICKET -->
+<section id="tickets" class="screen">
+  <div class="page-title">チケット</div>
+
+  <div class="card">
+    <div class="card-title">あなたのチケット</div>
+    <div class="big-number" id="ticketType">未登録</div>
+    <div class="muted" id="ticketPrice"></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">来場日時予約</div>
+    <div class="muted">通期パスは同時に最大4日分まで管理</div>
+
+    <div class="ticket-progress" id="ticketProgress"></div>
+
+    <div id="ticketList"></div>
+
+    <button class="primary-button" onclick="openTicketForm()">
+      ＋ 来場日時を登録
+    </button>
+  </div>
+
+  <div class="card">
+    <div class="card-title">チケット情報を登録</div>
+    <button class="secondary-button" onclick="openTicketTypeForm()">
+      🎫 購入したチケットを設定
+    </button>
+  </div>
+</section>
+
+
+<!-- BUS -->
+<section id="bus" class="screen">
+  <div class="page-title">シャトルバス</div>
+
+  <div class="card">
+    <div class="muted">シャトルバス購入累計</div>
+    <div class="big-number" id="busTotal">¥0</div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">予約一覧</div>
+    <div id="busList"></div>
+
+    <button class="primary-button" onclick="openBusForm()">
+      ＋ バスを登録
+    </button>
+  </div>
+</section>
+
+
+<!-- OTHER -->
+<section id="other" class="screen">
+  <div class="page-title">その他</div>
+
+  <div class="card">
+    <div class="card-title">‼️ イベント</div>
+    <div class="muted">気になるイベントを自分で登録できます。</div>
+    <button class="primary-button" onclick="openEventForm()">
+      ＋ イベントを登録
+    </button>
+  </div>
+
+  <div class="card">
+    <div class="card-title">🌿 MY PLANについて</div>
+    <div class="muted">
+      GREEN×EXPO 2027を自分用に管理するためのMY PLAN。
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">💾 データ</div>
+    <div class="muted">
+      登録した予定はこの端末のブラウザに保存されます。
+    </div>
+  </div>
+</section>
+
+</main>
+
+
+<!-- BOTTOM NAV -->
+<nav class="bottom-nav">
+  <button class="nav-button active" onclick="showScreen('home', this)">
+    <span class="nav-icon">⌂</span>ホーム
+  </button>
+
+  <button class="nav-button" onclick="showScreen('calendar', this)">
+    <span class="nav-icon">▦</span>カレンダー
+  </button>
+
+  <button class="nav-button" onclick="showScreen('tickets', this)">
+    <span class="nav-icon">🎫</span>チケット
+  </button>
+
+  <button class="nav-button" onclick="showScreen('bus', this)">
+    <span class="nav-icon">🚌</span>バス
+  </button>
+
+  <button class="nav-button" onclick="showScreen('other', this)">
+    <span class="nav-icon">☰</span>その他
+  </button>
+</nav>
+
+</div>
+
+
+<!-- MODAL -->
+<div class="modal" id="modal">
+  <div class="modal-box">
+    <div class="modal-head">
+      <div class="modal-title" id="modalTitle"></div>
+      <button class="close" onclick="closeModal()">×</button>
+    </div>
+    <div id="modalContent"></div>
+  </div>
+</div>
+
+
+<script>
+
+const START_DATE = new Date(2027, 2, 19);
+const END_DATE = new Date(2027, 8, 26);
+
+const STATIONS = [
+  "瀬谷駅",
+  "三ツ境駅",
+  "南町田グランベリーパーク駅",
+  "十日市場駅"
+];
+
+let data = JSON.parse(localStorage.getItem("greenExpoMyPlan")) || {
+  ticket: {
+    type: "",
+    price: 0
+  },
+  visits: [],
+  buses: [],
+  events: []
+};
+
+let currentMonth = new Date(2027, 2, 1);
+let selectedDate = null;
+let selectedBusDirection = "行";
+
+
+function save() {
+  localStorage.setItem("greenExpoMyPlan", JSON.stringify(data));
+  renderAll();
+}
+
+
+function formatDate(date) {
+  const y = date.getFullYear();
+  const m = String(date.getMonth()+1).padStart(2,"0");
+  const d = String(date.getDate()).padStart(2,"0");
+  return `${y}-${m}-${d}`;
+}
+
+
+function displayDate(str) {
+  const d = new Date(str + "T00:00:00");
+  return `${d.getMonth()+1}月${d.getDate()}日`;
+}
+
+
+function weekday(str) {
+  const d = new Date(str + "T00:00:00");
+  return ["日","月","火","水","木","金","土"][d.getDay()];
+}
+
+
+function showScreen(id, button) {
+  document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
+  document.getElementById(id).classList.add("active");
+
+  document.querySelectorAll(".nav-button").forEach(b => b.classList.remove("active"));
+
+  if (button) {
+    button.classList.add("active");
+  } else {
+    const map = {
+      home:0,
+      calendar:1,
+      tickets:2,
+      bus:3,
+      other:4
+    };
+
+    if (map[id] !== undefined) {
+      document.querySelectorAll(".nav-button")[map[id]].classList.add("active");
+    }
+  }
+
+  window.scrollTo(0,0);
+
+  if (id === "calendar") renderCalendar();
+  if (id === "tickets") renderTickets();
+  if (id === "bus") renderBus();
+  if (id === "home") renderHome();
+}
+
+
+function changeMonth(diff) {
+  const next = new Date(
+    currentMonth.getFullYear(),
+    currentMonth.getMonth() + diff,
+    1
+  );
+
+  const min = new Date(2027,2,1);
+  const max = new Date(2027,8,1);
+
+  if (next < min || next > max) return;
+
+  currentMonth = next;
+  renderCalendar();
+}
+
+
+function getBus(date, direction) {
+  return data.buses.find(
+    b => b.date === date && b.direction === direction
+  );
+}
+
+
+function getEvents(date) {
+  return data.events.filter(e => e.date === date);
+}
+
+
+function getVisit(date) {
+  return data.visits.find(v => v.date === date);
+}
+
+
+function renderCalendar() {
+
+  const year = currentMonth.getFullYear();
+  const month = currentMonth.getMonth();
+
+  document.getElementById("monthTitle").textContent =
+    `${year}年${month+1}月`;
+
+  const grid = document.getElementById("calendarGrid");
+  grid.innerHTML = "";
+
+  let firstDay = new Date(year, month, 1).getDay();
+  firstDay = (firstDay + 6) % 7;
+
+  const daysInMonth = new Date(year, month+1, 0).getDate();
+
+  for (let i=0; i<firstDay; i++) {
+    const empty = document.createElement("div");
+    empty.className = "day empty-day";
+    grid.appendChild(empty);
+  }
+
+  for (let d=1; d<=daysInMonth; d++) {
+
+    const date = formatDate(new Date(year, month, d));
+
+    const cell = document.createElement("div");
+    cell.className = "day";
+
+    const dateObj = new Date(date + "T00:00:00");
+
+    if (dateObj < START_DATE || dateObj > END_DATE) {
+      cell.style.opacity = ".35";
+    }
+
+    const visit = getVisit(date);
+    const go = getBus(date, "行");
+    const back = getBus(date, "帰");
+    const events = getEvents(date);
+
+    if (visit || go || back || events.length) {
+      cell.classList.add("today-plan");
+    }
+
+    cell.innerHTML = `
+      <div class="day-number">${d}</div>
+
+      <div class="bus-columns">
+        <div class="bus-col">
+          <div class="bus-label">行 🚎</div>
+          ${
+            go
+            ? `<div class="bus-time">${go.time}</div>
+               <div class="bus-station">${shortStation(go.station)}</div>`
+            : `<div class="bus-empty">❌</div>`
+          }
+        </div>
+
+        <div class="bus-col">
+          <div class="bus-label">帰 🚎</div>
+          ${
+            back
+            ? `<div class="bus-time">${back.time}</div>
+               <div class="bus-station">${shortStation(back.station)}</div>`
+            : `<div class="bus-empty">❌</div>`
+          }
+        </div>
+      </div>
+
+      ${
+        events.length
+        ? `<div class="event-badge">‼️ イベントあり</div>`
+        : ""
+      }
+    `;
+
+    cell.onclick = () => openDay(date);
+
+    grid.appendChild(cell);
+  }
+}
+
+
+function shortStation(station) {
+  return station
+    .replace("駅","")
+    .replace("南町田グランベリーパーク","南町田")
+    .replace("三ツ境","三ツ境")
+    .replace("十日市場","十日市場")
+    .replace("瀬谷","瀬谷");
+}
+
+
+function openDay(date) {
+  selectedDate = date;
+
+  const d = new Date(date + "T00:00:00");
+
+  document.getElementById("detailDate").textContent =
+    `${d.getMonth()+1}月${d.getDate()}日（${weekday(date)}）`;
+
+  const visit = getVisit(date);
+  const go = getBus(date,"行");
+  const back = getBus(date,"帰");
+  const events = getEvents(date);
+
+  document.getElementById("detailTicket").innerHTML =
+    visit
+    ? `
+      <div class="list-main">🎫 来場予約</div>
+      <div class="list-sub">${visit.time || "時間未登録"} ・ ${visit.type || "チケット"}</div>
+    `
+    : `<div class="empty">チケットの登録はありません</div>`;
+
+  document.getElementById("detailBus").innerHTML =
+    busDetailHTML(go,"行") +
+    busDetailHTML(back,"帰");
+
+  document.getElementById("detailEvents").innerHTML =
+    events.length
+    ? events.map(e => `
+        <div class="detail-event">
+          <div class="detail-event-title">${e.title}</div>
+          <div class="detail-event-info">
+            ${e.time ? e.time : ""} ${e.note ? "・ " + e.note : ""}
+          </div>
+        </div>
+      `).join("")
+    : `<div class="empty">イベントはありません</div>`;
+
+  showScreen("detail");
+}
+
+
+function busDetailHTML(bus,direction) {
+  if (!bus) {
+    return `
+      <div class="bus-detail">
+        <strong>🚎 ${direction}</strong>
+        <div class="bus-empty">❌ 未登録</div>
+      </div>
+    `;
+  }
+
+  return `
+    <div class="bus-detail">
+      <strong>🚎 ${direction}</strong>
+      <div class="time">${bus.time}</div>
+      <div class="station">${bus.station}</div>
+      <div class="station">¥${bus.price}</div>
+    </div>
+  `;
+}
+
+
+function openAddMenu() {
+
+  document.getElementById("modalTitle").textContent = "予定を追加";
+
+  document.getElementById("modalContent").innerHTML = `
+    <button class="primary-button" onclick="openTicketForm()">
+      🎫 チケット・来場日時
+    </button>
+
+    <button class="primary-button" onclick="openBusForm()">
+      🚌 シャトルバス
+    </button>
+
+    <button class="primary-button" onclick="openEventForm()">
+      ‼️ イベント
+    </button>
+  `;
+
+  document.getElementById("modal").classList.add("show");
+}
+
+
+function openBusForm() {
+
+  document.getElementById("modalTitle").textContent =
+    `🚌 バスを登録`;
+
+  document.getElementById("modalContent").innerHTML = `
+    <div class="form-group">
+      <label class="form-label">日付</label>
+      <input id="busDate" type="date" value="${selectedDate || ""}">
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">方向</label>
+      <div class="radio-row">
+        <button class="radio-button selected" id="goBtn"
+          onclick="selectDirection('行')">🚎 行</button>
+        <button class="radio-button" id="backBtn"
+          onclick="selectDirection('帰')">🚎 帰</button>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label" id="stationLabel">乗車駅</label>
+      <select id="busStation">
+        ${STATIONS.map(s => `<option>${s}</option>`).join("")}
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">時間</label>
+      <input id="busTime" type="time">
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">料金</label>
+      <input id="busPrice" type="number" value="200">
+    </div>
+
+    <button class="primary-button" onclick="saveBus()">
+      保存する
+    </button>
+  `;
+
+  document.getElementById("modal").classList.add("show");
+}
+
+
+function selectDirection(direction) {
+  selectedBusDirection = direction;
+
+  document.getElementById("goBtn").classList.toggle(
+    "selected", direction === "行"
+  );
+
+  document.getElementById("backBtn").classList.toggle(
+    "selected", direction === "帰"
+  );
+
+  document.getElementById("stationLabel").textContent =
+    direction === "行" ? "乗車駅" : "降車駅";
+}
+
+
+function saveBus() {
+
+  const date = document.getElementById("busDate").value;
+  const time = document.getElementById("busTime").value;
+  const station = document.getElementById("busStation").value;
+  const price = Number(document.getElementById("busPrice").value) || 0;
+
+  if (!date || !time) {
+    alert("日付と時間を入力してください");
+    return;
+  }
+
+  data.buses = data.buses.filter(
+    b => !(b.date === date && b.direction === selectedBusDirection)
+  );
+
+  data.buses.push({
+    date,
+    direction: selectedBusDirection,
+    station,
+    time,
+    price
+  });
+
+  closeModal();
+  save();
+  openDay(date);
+}
+
+
+function openTicketTypeForm() {
+
+  document.getElementById("modalTitle").textContent =
+    "🎫 チケットを設定";
+
+  document.getElementById("modalContent").innerHTML = `
+    <div class="form-group">
+      <label class="form-label">チケット</label>
+      <select id="ticketTypeInput">
+        <option value="通期パス">通期パス</option>
+        <option value="夏パス">夏パス</option>
+        <option value="1日券">1日券</option>
+        <option value="その他">その他</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">購入金額</label>
+      <input id="ticketPriceInput" type="number" value="28000">
+    </div>
+
+    <button class="primary-button" onclick="saveTicketType()">
+      保存する
+    </button>
+  `;
+
+  document.getElementById("modal").classList.add("show");
+}
+
+
+function saveTicketType() {
+  data.ticket.type = document.getElementById("ticketTypeInput").value;
+  data.ticket.price = Number(
+    document.getElementById("ticketPriceInput").value
+  ) || 0;
+
+  closeModal();
+  save();
+}
+
+
+function openTicketForm() {
+
+  document.getElementById("modalTitle").textContent =
+    "🎫 来場日時を登録";
+
+  document.getElementById("modalContent").innerHTML = `
+    <div class="form-group">
+      <label class="form-label">来場日</label>
+      <input id="visitDate" type="date"
+        value="${selectedDate || ""}">
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">入場時間</label>
+      <input id="visitTime" type="time">
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">メモ</label>
+      <input id="visitNote" type="text"
+        placeholder="例：通期パス">
+    </div>
+
+    <button class="primary-button" onclick="saveVisit()">
+      保存する
+    </button>
+  `;
+
+  document.getElementById("modal").classList.add("show");
+}
+
+
+function saveVisit() {
+
+  const date = document.getElementById("visitDate").value;
+  const time = document.getElementById("visitTime").value;
+  const note = document.getElementById("visitNote").value;
+
+  if (!date) {
+    alert("来場日を入力してください");
+    return;
+  }
+
+  data.visits = data.visits.filter(v => v.date !== date);
+
+  data.visits.push({
+    date,
+    time,
+    type: note || data.ticket.type || "チケット"
+  });
+
+  closeModal();
+  save();
+  openDay(date);
+}
+
+
+function openEventForm() {
+
+  document.getElementById("modalTitle").textContent =
+    "‼️ イベントを登録";
+
+  document.getElementById("modalContent").innerHTML = `
+    <div class="form-group">
+      <label class="form-label">日付</label>
+      <input id="eventDate" type="date"
+        value="${selectedDate || ""}">
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">イベント名</label>
+      <input id="eventTitle" type="text"
+        placeholder="例：○○パビリオン">
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">時間</label>
+      <input id="eventTime" type="time">
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">メモ</label>
+      <input id="eventNote" type="text"
+        placeholder="例：予約が必要">
+    </div>
+
+    <button class="primary-button" onclick="saveEvent()">
+      保存する
+    </button>
+  `;
+
+  document.getElementById("modal").classList.add("show");
+}
+
+
+function saveEvent() {
+
+  const date = document.getElementById("eventDate").value;
+  const title = document.getElementById("eventTitle").value;
+  const time = document.getElementById("eventTime").value;
+  const note = document.getElementById("eventNote").value;
+
+  if (!date || !title) {
+    alert("日付とイベント名を入力してください");
+    return;
+  }
+
+  data.events.push({
+    id: Date.now(),
+    date,
+    title,
+    time,
+    note
+  });
+
+  closeModal();
+  save();
+  openDay(date);
+}
+
+
+function renderTickets() {
+
+  document.getElementById("ticketType").textContent =
+    data.ticket.type || "未登録";
+
+  document.getElementById("ticketPrice").textContent =
+    data.ticket.price
+    ? `購入金額 ¥${data.ticket.price.toLocaleString()}`
+    : "";
+
+  const max = data.ticket.type === "通期パス" ? 4 : 1;
+
+  document.getElementById("ticketProgress").innerHTML =
+    Array.from({length:max}, (_,i) =>
+      `<div class="slot ${i < data.visits.length ? "used" : ""}"></div>`
+    ).join("");
+
+  document.getElementById("ticketList").innerHTML =
+    data.visits.length
+    ? data.visits
+      .sort((a,b)=>a.date.localeCompare(b.date))
+      .map(v => `
+        <div class="list-item">
+          <div>
+            <div class="list-main">
+              ${displayDate(v.date)}（${weekday(v.date)}）
+            </div>
+            <div class="list-sub">
+              ${v.time || "時間未登録"} ・ ${v.type}
+            </div>
+          </div>
+        </div>
+      `).join("")
+    : `<div class="empty">来場日時はまだありません。</div>`;
+}
+
+
+function renderBus() {
+
+  const total = data.buses.reduce(
+    (sum,b) => sum + Number(b.price || 0), 0
+  );
+
+  document.getElementById("busTotal").textContent =
+    `¥${total.toLocaleString()}`;
+
+  document.getElementById("busList").innerHTML =
+    data.buses.length
+    ? data.buses
+      .sort((a,b)=>
+        (a.date+a.time).localeCompare(b.date+b.time)
+      )
+      .map(b => `
+        <div class="list-item">
+          <div>
+            <div class="list-main">
+              ${displayDate(b.date)}（${weekday(b.date)}）
+              ・ 🚎 ${b.direction}
+            </div>
+            <div class="list-sub">
+              ${b.time} ・ ${b.station}
+            </div>
+          </div>
+          <div class="list-price">¥${b.price}</div>
+        </div>
+      `).join("")
+    : `<div class="empty">バスの予約はまだありません。</div>`;
+}
+
+
+function renderHome() {
+
+  const visits = [...data.visits]
+    .sort((a,b)=>a.date.localeCompare(b.date));
+
+  const next = visits.find(v =>
+    new Date(v.date + "T23:59:59") >= new Date()
+  );
+
+  document.getElementById("nextVisit").textContent =
+    next
+    ? `${displayDate(next.date)}（${weekday(next.date)}）`
+    : "まだ登録されていません";
+
+  if (next) {
+    const target = new Date(next.date + "T00:00:00");
+    const now = new Date();
+    const diff = Math.ceil(
+      (target - now) / (1000*60*60*24)
+    );
+
+    document.getElementById("countdown").textContent =
+      diff > 0 ? `あと ${diff} 日` : "今日の来場予定";
+  } else {
+    document.getElementById("countdown").textContent = "";
+  }
+
+  const max = data.ticket.type === "通期パス" ? 4 : 1;
+
+  document.getElementById("homeTickets").textContent =
+    `${data.visits.length} / ${max}`;
+
+  const total = data.buses.reduce(
+    (sum,b)=>sum+Number(b.price||0),0
+  );
+
+  document.getElementById("homeBusTotal").textContent =
+    `¥${total.toLocaleString()}`;
+
+  document.getElementById("homePlans").innerHTML =
+    next
+    ? `
+      <div class="card" onclick="openDay('${next.date}')">
+        <div class="card-title">
+          ${displayDate(next.date)}（${weekday(next.date)}）
+        </div>
+
+        <div class="list-sub">
+          🎫 ${next.time || "時間未登録"}
+        </div>
+
+        ${
+          getBus(next.date,"行")
+          ? `<div class="list-sub">
+              🚎 行 ${getBus(next.date,"行").time}
+              ${shortStation(getBus(next.date,"行").station)}
+            </div>`
+          : ""
+        }
+
+        ${
+          getBus(next.date,"帰")
+          ? `<div class="list-sub">
+              🚎 帰 ${getBus(next.date,"帰").time}
+              ${shortStation(getBus(next.date,"帰").station)}
+            </div>`
+          : ""
+        }
+
+        ${
+          getEvents(next.date).length
+          ? `<div class="event-badge">‼️ イベントあり</div>`
+          : ""
+        }
+      </div>
+    `
+    : `<div class="card"><div class="empty">
+        カレンダーから来場予定を登録してみよう。
+      </div></div>`;
+}
+
+
+function closeModal() {
+  document.getElementById("modal").classList.remove("show");
+}
+
+
+function renderAll() {
+  renderHome();
+  renderCalendar();
+  renderTickets();
+  renderBus();
+}
+
+
+document.getElementById("headerDate").textContent =
+  "2027.3.19 — 9.26";
+
+renderAll();
+
+</script>
+
+</body>
+</html>
