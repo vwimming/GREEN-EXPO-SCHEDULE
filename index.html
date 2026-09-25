@@ -2,15 +2,15 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="theme-color" content="#174f39">
 <title>GREEN×EXPO MY PLAN</title>
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue","Hiragino Kaku Gothic ProN","Yu Gothic",sans-serif;background:#f5f7f2;color:#17352a}
-button,input,select,textarea{font:inherit}button{cursor:pointer}
+html{overscroll-behavior:none}body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue","Hiragino Kaku Gothic ProN","Yu Gothic",sans-serif;background:#f5f7f2;color:#17352a}
+button,input,select,textarea{font:inherit}button{cursor:pointer}body,.app{touch-action:pan-y}.app{-webkit-user-select:none;user-select:none}input,textarea,select{-webkit-user-select:text;user-select:text}
 .app{max-width:520px;margin:0 auto;min-height:100vh;background:#f5f7f2;padding-bottom:90px}
 .header{background:#174f39;color:#fff;padding:22px 20px 20px;border-radius:0 0 24px 24px}
 .header-top{display:flex;justify-content:space-between;align-items:center}
@@ -28,10 +28,10 @@ button,input,select,textarea{font:inherit}button{cursor:pointer}
 .weekdays,.calendar-grid{display:grid;grid-template-columns:repeat(7,1fr)}.weekdays{margin-bottom:6px}.weekday{text-align:center;font-size:11px;color:#859188;padding:4px 0}
 .day{min-height:94px;background:#fff;border:1px solid #edf0eb;padding:6px 4px;overflow:hidden;position:relative}
 .day.empty-day{background:transparent;border:none}.day.plan-day{background:#eaf4ed;border-color:#d4e5d9}
-.day.today-day{background:#e5eef0;border-color:#7da7b4;box-shadow:inset 0 0 0 2px #8fb5c1}
+.day.today-day{background:#e5eef0;border-color:#7da7b4;box-shadow:inset 0 0 0 2px #8fb5c1}.day.today-day .day-number{color:#245f72}.day.today-day:before{content:"今日";position:absolute;left:4px;bottom:4px;font-size:7px;font-weight:900;color:#3d7181;letter-spacing:.2px}
 .day-top{display:flex;justify-content:space-between;align-items:flex-start;gap:2px;min-height:26px}
 .visit-badge{margin:0;background:#dbeaf2;color:#2c6380;border:1px solid #b9d3df;border-radius:7px;min-width:30px;padding:2px 4px;text-align:center;font-size:8px;font-weight:900;line-height:1.05;white-space:normal;flex-shrink:0}
-.visit-badge span{display:block}.day-number{font-size:13px;font-weight:800;margin-bottom:5px}
+.visit-badge span{display:block}.visit-badge.visited{background:#e6f1eb;color:#2b684d;border-color:#bfd8c8}.day-number{font-size:13px;font-weight:800;margin-bottom:5px}
 .bus-columns{display:grid;grid-template-columns:1fr 1fr;gap:3px;margin-top:4px}.bus-col{min-width:0;text-align:center;border-radius:7px;background:rgba(255,255,255,.7);padding:3px 1px}
 .bus-label{font-size:9px;font-weight:800;color:#4f665a}.bus-time{font-size:9px;font-weight:700;white-space:nowrap;overflow:hidden}.bus-station{font-size:8px;color:#728078;white-space:nowrap;overflow:hidden}.bus-empty{font-size:14px;line-height:30px}
 .event-badge{margin-top:3px;font-size:8px;font-weight:800;color:#a06417;white-space:nowrap;overflow:hidden}.memo-badge{font-size:8px;color:#728078;margin-top:2px}
@@ -157,6 +157,21 @@ function ticketById(id){return data.tickets.find(t=>t.id===id)}
 function ticketLimit(t){if(!t)return 0;if(t.type==="通期パス")return 4;if(t.type==="夏パス")return 3;return 1}
 function activeReservations(tid){return data.visits.filter(v=>v.ticketId===tid&&!v.visited)}
 function formatYen(n){return "¥"+Number(n||0).toLocaleString()}
+function visitStartMinutes(time){
+ const m=String(time||"").match(/(\d{1,2}):(\d{2})/);
+ return m?Number(m[1])*60+Number(m[2]):null;
+}
+function autoMarkVisited(){
+ const now=new Date(),today=fmtDate(now),nowMinutes=now.getHours()*60+now.getMinutes();
+ let changed=false;
+ data.visits.forEach(v=>{
+  if(v.visited||v.date!==today)return;
+  const start=visitStartMinutes(v.time);
+  if(start!==null&&nowMinutes>=start){v.visited=true;changed=true;}
+ });
+ if(changed)localStorage.setItem(KEY,JSON.stringify(data));
+ return changed;
+}
 
 function showScreen(id,button){
  document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));
@@ -182,7 +197,7 @@ function renderCalendar(){
   if(date===today)cell.classList.add("today-day");
   if(go||back||events.length||memo)cell.classList.add("plan-day");
   if(!inExpo(date))cell.style.opacity=".35";
-  cell.innerHTML=`<div class="day-top"><div class="day-number">${d}</div>${visit?`<div class="visit-badge"><span>来場</span><span>予定</span></div>`:""}</div>
+  cell.innerHTML=`<div class="day-top"><div class="day-number">${d}</div>${visit?`<div class="visit-badge ${visit.visited?"visited":""}"><span>来場</span><span>${visit.visited?"済み":"予定"}</span></div>`:""}</div>
   <div class="bus-columns">
    <div class="bus-col"><div class="bus-label">行 🚎</div>${go?`<div class="bus-time">${go.time}</div><div class="bus-station">${shortStation(go.station)}</div>`:`<div class="bus-empty">❌</div>`}</div>
    <div class="bus-col"><div class="bus-label">帰 🚎</div>${back?`<div class="bus-time">${back.time}</div><div class="bus-station">${shortStation(back.station)}</div>`:`<div class="bus-empty">❌</div>`}</div>
@@ -333,7 +348,9 @@ function maybeBackupPrompt(){
 function closeModal(){document.getElementById("modal").classList.remove("show")}
 function esc(s){return String(s??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]))}
 function escAttr(s){return esc(s)}
-function renderAll(){renderHome();renderCalendar();renderTickets();renderBus()}
+function renderAll(){autoMarkVisited();renderHome();renderCalendar();renderTickets();renderBus()}
+document.addEventListener("gesturestart",e=>e.preventDefault(),{passive:false});document.addEventListener("gesturechange",e=>e.preventDefault(),{passive:false});document.addEventListener("gestureend",e=>e.preventDefault(),{passive:false});
+setInterval(()=>{if(autoMarkVisited()){renderHome();renderCalendar();renderTickets()}},30000);
 document.getElementById("modal").addEventListener("click",e=>{if(e.target.id==="modal")closeModal()});
 renderAll();maybeBackupPrompt();
 </script>
