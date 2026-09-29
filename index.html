@@ -104,6 +104,9 @@ body{background:linear-gradient(180deg,#f8fbf8 0%,#f2f6f2 100%);color:var(--ink)
 @media(max-height:700px){.bus-form-compact{gap:5px}.bus-form-compact select,.bus-form-compact input,.radio-row.compact .radio-button{height:36px;min-height:36px}.bus-auto-box{padding:7px 9px}.bus-price-large{font-size:19px}.bus-save-button{min-height:40px}}
 <style id="v6-modal">.modal{padding:0 8px}.modal-box{max-height:92vh;overflow:hidden;box-shadow:0 -16px 40px rgba(10,30,20,.16)}#modalContent{overflow:visible}</style>
 <meta name="apple-mobile-web-app-title" content="GREEN EXPO GUIDE">
+
+/* v8 ticket refinement */
+.ticket-add-area{margin-top:22px;padding-top:18px;border-top:1px solid #e8eee9}.ticket-add-area .primary-button{margin-top:0}.ticket-reserve-area{margin-top:13px}.ticket-reserve-button{width:100%;justify-content:center}.ticket-full-message{width:100%;padding:10px 12px;border-radius:11px;background:#f1f4f1;color:#7b867f;font-size:12px;font-weight:800;text-align:center}.slot.used{cursor:pointer;appearance:none;-webkit-appearance:none;font-family:inherit}.slot.used:active{transform:scale(.97)}
 </head>
 <body>
 <div class="splash" id="splash" onclick="hideSplash()"><img class="splash-logo" src="green-expo-guide-logo.png" alt="GREEN EXPO GUIDE"><div class="splash-name">GREEN EXPO GUIDE</div><div class="splash-sub">GREEN×EXPO 2027</div></div>
@@ -122,7 +125,7 @@ body{background:linear-gradient(180deg,#f8fbf8 0%,#f2f6f2 100%);color:var(--ink)
 </section>
 
 <section id="calendar" class="screen">
-<div class="page-title">カレンダー</div><div class="calendar-head"><div class="month-title" id="monthTitle"></div><div class="month-buttons"><button onclick="changeMonth(-1)">‹</button><button onclick="changeMonth(1)">›</button></div></div><div class="calendar-toolbar"><button class="calendar-jump" onclick="jumpToExpoStart()">🌱 開幕月へ</button><button class="calendar-jump" onclick="openBulkVisitForm()">＋ 複数日をまとめて登録</button></div>
+<div class="page-title">カレンダー</div><div class="calendar-head"><div class="month-title" id="monthTitle"></div><div class="month-buttons"><button onclick="changeMonth(-1)">‹</button><button onclick="changeMonth(1)">›</button></div></div><div class="calendar-toolbar"><button class="calendar-jump" onclick="jumpToExpoStart()">🌱 開幕月へ</button><button class="calendar-jump" onclick="jumpToExpoEnd()">🌸 閉幕月へ</button></div>
 <div class="weekdays"><div class="weekday">月</div><div class="weekday">火</div><div class="weekday">水</div><div class="weekday">木</div><div class="weekday">金</div><div class="weekday">土</div><div class="weekday">日</div></div>
 <div class="calendar-grid" id="calendarGrid"></div>
 </section>
@@ -143,7 +146,7 @@ body{background:linear-gradient(180deg,#f8fbf8 0%,#f2f6f2 100%);color:var(--ink)
 <div class="summary"><div class="summary-icon">🎫</div><div class="summary-label">チケット代累計</div><div class="summary-value" id="ticketTotal">¥0</div></div>
 <div class="summary"><div class="summary-icon">📅</div><div class="summary-label">累計来場回数</div><div class="summary-value" id="visitCountTotal">0回</div></div>
 </div>
-<div class="card"><div class="card-title">あなたのチケット</div><div id="ticketCards"></div><button class="primary-button" onclick="openTicketTypeForm()">＋ チケットを登録</button></div>
+<div class="card"><div class="card-title">あなたのチケット</div><div id="ticketCards"></div><div class="ticket-add-area"><button class="primary-button" onclick="openTicketTypeForm()">＋ さらに購入したチケットを登録する</button></div></div>
 <div class="card"><div class="card-title">来場日時予約</div><div class="muted">チケットごとに予約を管理します。</div><div id="ticketReservationList"></div><button class="primary-button" onclick="openVisitForm()">＋ 来場日時を登録</button></div>
 </section>
 
@@ -258,6 +261,7 @@ function showScreen(id,button){
 function rememberMonth(){localStorage.setItem(VIEW_MONTH_KEY,JSON.stringify({year:currentMonth.getFullYear(),month:currentMonth.getMonth(),at:Date.now()}))}
 function changeMonth(diff){const n=new Date(currentMonth.getFullYear(),currentMonth.getMonth()+diff,1);if(n<new Date(2027,2,1)||n>new Date(2027,8,1))return;currentMonth=n;rememberMonth();renderCalendar()}
 function jumpToExpoStart(){currentMonth=new Date(2027,2,1);rememberMonth();renderCalendar();}
+function jumpToExpoEnd(){currentMonth=new Date(2027,8,1);rememberMonth();renderCalendar();}
 
 function renderCalendar(){
  const y=currentMonth.getFullYear(),m=currentMonth.getMonth();
@@ -457,7 +461,7 @@ function renderTickets(){
  document.getElementById("ticketTotal").textContent=formatYen(total);
  document.getElementById("visitCountTotal").textContent=`${data.visits.filter(v=>v.visited).length}回`;
  const wrap=document.getElementById("ticketCards");
- wrap.innerHTML=data.tickets.length?data.tickets.map(t=>{const reservations=data.visits.filter(v=>v.ticketId===t.id&&!v.visited).slice().sort((a,b)=>a.date.localeCompare(b.date)),count=reservations.length,limit=ticketLimit(t);const slots=Array.from({length:limit},(_,i)=>reservations[i]?`<div class="slot used">${displayDateShort(reservations[i].date)}</div>`:`<div class="slot">未使用</div>`).join("");return`<div class="ticket-card"><div class="ticket-head"><div><div class="ticket-type">${esc(t.type)}</div><div class="ticket-meta">${formatYen(t.price)}${t.type==="その他"&&t.note?" ・ "+esc(t.note):""}</div></div><span class="pill">${count}/${limit} 予約中</span></div><div class="ticket-progress">${slots}</div><div class="ticket-progress-note">緑の枠は現在登録している来場日です。</div><div class="action-row"><button class="small-button" onclick="openTicketTypeForm('${t.id}')">編集</button><button class="small-button" onclick="openVisitFormForTicket('${t.id}')">このチケットで予約</button></div></div>`}).join(""):`<div class="empty">チケットがまだ登録されていません。</div>`;
+ wrap.innerHTML=data.tickets.length?data.tickets.map(t=>{const reservations=data.visits.filter(v=>v.ticketId===t.id&&!v.visited).slice().sort((a,b)=>a.date.localeCompare(b.date)),count=reservations.length,limit=ticketLimit(t);const slots=Array.from({length:limit},(_,i)=>reservations[i]?`<button type="button" class="slot used" onclick="openVisitForm('${reservations[i].id}')" title="${displayDate(reservations[i].date)}の来場日時を変更">${displayDateShort(reservations[i].date)}</button>`:`<div class="slot">未使用</div>`).join("");const canReserve=count<limit;return`<div class="ticket-card"><div class="ticket-head"><div><div class="ticket-type">${esc(t.type)}</div><div class="ticket-meta">${formatYen(t.price)}${t.type==="その他"&&t.note?" ・ "+esc(t.note):""}</div></div><span class="pill">${count}/${limit} 予約中</span></div><div class="ticket-progress">${slots}</div><div class="ticket-progress-note">緑の枠の日付をタップすると、その日の来場日時を変更できます。</div><div class="ticket-reserve-area">${canReserve?`<button class="small-button ticket-reserve-button" onclick="openVisitFormForTicket('${t.id}')">このチケットで予約</button>`:`<div class="ticket-full-message">このチケットは予約枠が満タンです</div>`}</div></div>`}).join(""):`<div class="empty">チケットがまだ登録されていません。</div>`;
  document.getElementById("ticketReservationList").innerHTML=data.visits.length?data.visits.slice().sort((a,b)=>a.date.localeCompare(b.date)).map(v=>{const t=ticketById(v.ticketId);return`<div class="list-item"><div><div class="list-main">${displayDate(v.date)}（${weekday(v.date)}）${v.visited?" ・ 来場済み":""}</div><div class="list-sub">${v.time||"時間未登録"} ・ ${t?esc(t.type):(v.type||"チケット")}</div></div><div><button class="small-button" onclick="openVisitForm('${v.id}')">変更</button></div></div>`}).join(""):`<div class="empty">来場日時はまだありません。</div>`
 }
 function openVisitFormForTicket(tid){selectedDate=null;editingVisitId=null;openVisitForm();setTimeout(()=>{const s=document.getElementById("visitTicket");if(s)s.value=tid},0)}
